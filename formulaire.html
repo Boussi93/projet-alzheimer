@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <!-- Responsive petits écrans -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupe HMD - Recherche </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Logo + menu principal -->
+    <header id="entete">
+        <div id="barre-haut">
+            <div id="bloc-logo">
+                <a href="index.html" id="lien-logo" aria-label="Retour à la page d'accueil">
+                    <div id="logo-rond">
+                        <img src="images/logo-HMD.png" alt="Logo HMD">
+                    </div>
+                </a>
+
+                <div id="texte-logo">
+                    <h1>Groupe HMD</h1>
+                    <p>Alzheimer & données de santé</p>
+                </div>
+            </div>
+            <!-- Menu de navigation principal -->
+            <nav>
+                <ul id="menu">
+                    <li><a href="index.html#carte-pathologie">Maladie</a></li>
+                    <li><a href="base-donnees.html">Base de données</a></li>
+                    <li><a href="analyses.html">Analyses</a></li>
+                    <li><a href="recommandations.html">Recommandations</a></li>
+                    <li><a href="interrogation.php">Recherche</a></li>
+                    <li><a href="ressources.html">Ressources</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+    <section id="presentation-site">
+        <div id="contenu-presentation">
+            <div id="texte-presentation">
+                <h2>Recherche dans la base de données</h2>
+                <p>
+                    Cette page permet d’effectuer une recherche simple par identifiant patient
+                    ainsi qu’une recherche avancée selon plusieurs critères.
+                </p>
+    </section>
+
+    <section class="bloc-formulaire">
+        <h2>Recherche simple</h2>
+        <form method="post" action="interrogation.php">
+            <label for="id_patient">Identifiant du patient</label>
+            <input type="number" name="id_patient" id="id_patient" min="1" required>
+            <button type="submit" name="recherche_simple" class="btn btn-principal">
+                Rechercher
+            </button>
+        </form>
+    </section>
+
+    <section class="bloc-formulaire">
+        <h2>Recherche avancée</h2>
+        <form method="post" action="interrogation.php">
+            <label for="age_min">Âge minimum</label>
+            <input type="number" name="age_min" id="age_min" min="0" />
+            <br>
+            <label for="age_max">Âge maximum</label>
+            <input type="number" name="age_max" id="age_max" min="0" />
+            <br>
+            <label for="genre">Genre</label>
+            <select name="genre" id="genre">
+                <option value="0">Homme</option>
+                <option value="1">Femme</option>
+            </select>
+
+            <label for="fumeur">Fumeur</label>
+            <select name="fumeur" id="fumeur">
+                <option value="0">Non</option>
+                <option value="1">Oui</option>
+            </select>
+
+            <label for="diagnostic">Diagnostic</label>
+            <select name="diagnostic" id="diagnostic">
+                <option value="0">Pas Alzheimer</option>
+                <option value="1">Alzheimer</option>
+            </select>
+            <button type="submit" name="recherche_avancee" class="btn btn-secondaire">
+                Rechercher
+            </button>
+        </form>
+    </section>
+
+    <!-- footer - pied de page -->
+    <footer id="pied-page">
+        <div id="contenu-footer">
+            <div class="colonne-footer">
+                <h2>Groupe HMD</h2>
+                <p>Projet tutoré — M1 Santé publique, parcours Informatique biomédicale.</p>
+            </div>
+
+            <div class="colonne-footer">
+                <h3>Mentions</h3>
+                <p>Copyright © 2026 Groupe HMD. Tous droits réservés.</p>
+                <p>Utilisation à des fins pédagogiques.</p>
+                <p>Mentions légales</p>
+            </div>
+
+            <div class="colonne-footer">
+                <h3>Navigation</h3>
+                <p><a href="index.html#carte-pathologie">Pathologie</a></p>
+                <p><a href="base-donnees.html">Base de données</a></p>
+                <p><a href="analyses.html">Analyses</a></p>
+                <p><a href="recommandations.html">Recommandations</a></p>
+                <p><a href="interrogation.php">Recherche</a></p>
+                <p><a href="ressouces.html">Ressources</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

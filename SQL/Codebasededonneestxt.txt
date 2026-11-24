@@ -1,0 +1,274 @@
+
+Code base de données projettuteuré
+Création de la table principale : 
+CREATE TABLE Patient (
+    id_patient INT PRIMARY KEY NOT NULL,
+    age INT,
+    id_genre INT,
+    id_ethnie INT,
+    id_niveau_educ INT,
+    FOREIGN KEY (id_genre) REFERENCES genre(id_genre),
+    FOREIGN KEY (id_ethnie) REFERENCES ethnie(id_ethnie),
+    FOREIGN KEY (id_niveau_educ) REFERENCES niveau_educ(id_niveau_educ)
+);
+ALTER TABLE patient
+ADD COLUMN id_diagnostic_ref INT;
+
+Création des tables référentielles : 
+CREATE TABLE Ethnie (
+    id_ethnie      INT AUTO_INCREMENT PRIMARY KEY,
+    libelle_ethnie VARCHAR(100) NOT NULL
+);
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+INSERT INTO ethnie (id_ethnie, libelle_ethnie)
+VALUES (0, 'Caucasien'),(1, 'Afro-Américain'), (2, 'Asiatique'), (3, 'Autres');
+
+
+CREATE TABLE Niveau_educ (
+    id_niveau_educ INT AUTO_INCREMENT PRIMARY KEY,
+    libelle_educ   VARCHAR(100) NOT NULL
+);
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+INSERT INTO niveau_educ (id_niveau_educ, libelle_educ)
+VALUES (0, 'Aucun'),(1, 'Lycée'), (2, 'Licence'), (3, 'Plus haut');
+
+CREATE TABLE Genre (
+    id_genre    INT AUTO_INCREMENT PRIMARY KEY,
+    libelle_genre VARCHAR(100) NOT NULL
+);
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+INSERT INTO genre (id_genre, libelle_genre) VALUES
+(0, 'Homme'),
+(1, 'Femme');
+
+CREATE TABLE Ref_diagnostic (
+    id_diagnostic_ref INT AUTO_INCREMENT PRIMARY KEY,
+    libelle_diagnostic VARCHAR(255) NOT NULL
+);
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+INSERT INTO ref_diagnostic (id_diagnostic_ref, libelle_diagnostic) VALUES
+(0, 'Pas Alzheimer'),
+(1, 'Alzheimer');
+
+CREATE TABLE Ref_binaire (
+    id_binaire INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(255) NOT NULL
+);
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+INSERT INTO ref_binaire (id_binaire, libelle) VALUES
+(0, 'Non'),
+(1, 'Oui');
+
+
+CREATE TABLE Historique_Medical (
+    id_historique INT AUTO_INCREMENT PRIMARY KEY,
+    id_patient INT,
+    antecedents TINYINT,
+    maladie_cardio TINYINT,
+    diabete TINYINT,
+    depression TINYINT,
+    trauma_cranien TINYINT,
+    hypertension TINYINT,
+    FOREIGN KEY (patient) REFERENCES patient(id_patient),
+    FOREIGN KEY (antecedents) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (maladie_cardio) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (diabete) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (depression) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (trauma_cranien) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (hypertension) REFERENCES ref_binaire(id_binaire)
+);
+
+
+CREATE TABLE mode_vie (
+    id_mode_vie INT AUTO_INCREMENT PRIMARY KEY,
+    id_patient INT,
+    imc FLOAT,
+    fumeur TINYINT,
+    alcool FLOAT,
+    activite_physique FLOAT,
+    qualite_diet FLOAT,
+    qualite_sommeil FLOAT,
+    FOREIGN KEY (id_patient) REFERENCES patient(id_patient),
+    FOREIGN KEY (fumeur) REFERENCES ref_binaire(id_binaire)
+);
+
+CREATE TABLE mesure_clinique (
+    id_mesure_clinique INT AUTO_INCREMENT PRIMARY KEY,
+    id_patient INT,
+    pression_sys INT,
+    pression_dia INT,
+    chol_total FLOAT COMMENT 'g/L',
+    chol_hdl FLOAT COMMENT 'g/L',
+    chol_ldl FLOAT COMMENT 'g/L',
+    chol_tri FLOAT COMMENT 'g/L',
+    FOREIGN KEY (id_patient) REFERENCES patient(id_patient)
+);
+
+CREATE TABLE eval_cognitive (
+    id_eval INT AUTO_INCREMENT PRIMARY KEY,
+    id_patient INT,
+    mmse FLOAT,
+    score_fonct FLOAT,
+    memoire TINYINT,
+    probleme_comp TINYINT,
+    adl FLOAT,
+    FOREIGN KEY (id_patient) REFERENCES patient(id_patient),
+    FOREIGN KEY (memoire) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (probleme_comp) REFERENCES ref_binaire(id_binaire)
+);
+
+
+CREATE TABLE symptomes (
+    id_symptomes INT AUTO_INCREMENT PRIMARY KEY,
+    id_patient INT,
+    confusion TINYINT,
+    desorientation TINYINT,
+    chang_perso TINYINT,
+    difficulte_taches TINYINT,
+    oubli TINYINT,
+    FOREIGN KEY (id_patient) REFERENCES patient(id_patient),
+    FOREIGN KEY (confusion) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (desorientation) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (chang_perso) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (difficulte_taches) REFERENCES ref_binaire(id_binaire),
+    FOREIGN KEY (oubli) REFERENCES ref_binaire(id_binaire)
+);
+
+
+Création des tables de seuils pour le cholestérol : 
+Creation de la table seuil cholesterol :
+CREATE TABLE chol_total (
+    id_chol_total INT AUTO_INCREMENT PRIMARY KEY,
+    libelle_chol VARCHAR(50),
+    valeur_min FLOAT,
+    valeur_max FLOAT,
+    unite VARCHAR(20)
+);
+
+INSERT INTO chol_total(libelle_chol, valeur_min, valeur_max, unite)
+VALUES ('Taux optimal', 0, 2.0, 'g/L'),('Taux limite', 2.0, 2.5, 'g/L'),('Taux élevé', 2.5, 99, 'g/L');
+
+
+CREATE TABLE chol_hdl (
+    id_hdl INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(50),
+    valeur_min FLOAT,
+    valeur_max FLOAT,
+    unite VARCHAR(20)
+);
+
+INSERT INTO chol_hdl
+(libelle, valeur_min, valeur_max, unite)
+
+VALUES
+('Faible', 0, 0.3, 'g/L'),
+('Normal', 0.3, 0.9, 'g/L'),
+('Protecteur', 0.9, 99, 'g/L');
+
+CREATE TABLE chol_ldl (
+    id_ldl INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(50),
+    valeur_min FLOAT,
+    valeur_max FLOAT,
+    unite VARCHAR(20)
+);
+
+INSERT INTO chol_ldl(libelle, valeur_min, valeur_max, unite)
+VALUES('Faible', 0, 1.0, 'g/L'),('Normal', 1.0, 1.6, 'g/L'),('Élevé', 1.6, 99, 'g/L');
+
+CREATE TABLE chol_tri (
+    id_trig INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(50),
+    valeur_min FLOAT,
+    valeur_max FLOAT,
+    unite VARCHAR(20)
+);
+
+INSERT INTO chol_tri(libelle, valeur_min, valeur_max, unite)
+VALUES('Faible', 0, 0.4, 'g/L'),('Normal', 0.4, 1.5, 'g/L'),('Élevé', 1.5, 99, 'g/L');
+
+Création de la table IRM : 
+CREATE TABLE IRM (
+    id_irm INT NOT NULL,
+    id_patient INT NOT NULL,
+    nom_image VARCHAR(255)NOT NULL,
+    chemin_image VARCHAR(500)NOT NULL,
+    FOREIGN KEY (id_patient)REFERENCES Patient(id_patient)
+);
+
+INSERT INTO irm (id_irm, id_patient, nom_image, chemin_image) VALUES
+(1, 4751, 'irm_sain_01.jpg', 'images_irm/sain/irm_sain_01.jpg'),
+(2, 4752, 'irm_sain_02.jpg', 'images_irm/sain/irm_sain_02.jpg'),
+(3, 4753, 'irm_sain_03.jpg', 'images_irm/sain/irm_sain_03.jpg'),
+(4, 4754, 'irm_sain_04.jpg', 'images_irm/sain/irm_sain_04.jpg'),
+(5, 4755, 'irm_sain_05.jpg', 'images_irm/sain/irm_sain_05.jpg'),
+(6, 4756, 'irm_sain_06.jpg', 'images_irm/sain/irm_sain_06.jpg'),
+(7, 4757, 'irm_sain_07.jpg', 'images_irm/sain/irm_sain_07.jpg'),
+(8, 4759, 'irm_sain_08.jpg', 'images_irm/sain/irm_sain_08.jpg'),
+(9, 4760, 'irm_sain_09.jpg', 'images_irm/sain/irm_sain_09.jpg'),
+(10, 4761, 'irm_sain_10.jpg', 'images_irm/sain/irm_sain_10.jpg'),
+(11, 4762, 'irm_sain_11.jpg', 'images_irm/sain/irm_sain_11.jpg'),
+(12, 4763, 'irm_sain_12.jpg', 'images_irm/sain/irm_sain_12.jpg'),
+(13, 4765, 'irm_sain_13.jpg', 'images_irm/sain/irm_sain_13.jpg'),
+(14, 4769, 'irm_sain_14.jpg', 'images_irm/sain/irm_sain_14.jpg'),
+(15, 4772, 'irm_sain_15.jpg', 'images_irm/sain/irm_sain_15.jpg'),
+(16, 4773, 'irm_sain_16.jpg', 'images_irm/sain/irm_sain_16.jpg'),
+(17, 4776, 'irm_sain_17.jpg', 'images_irm/sain/irm_sain_17.jpg'),
+(18, 4777, 'irm_sain_18.jpg', 'images_irm/sain/irm_sain_18.jpg'),
+(19, 4778, 'irm_sain_19.jpg', 'images_irm/sain/irm_sain_19.jpg'),
+(20, 4779, 'irm_sain_20.jpg', 'images_irm/sain/irm_sain_20.jpg'),
+(21, 4780, 'irm_sain_21.jpg', 'images_irm/sain/irm_sain_21.jpg'),
+(22, 4781, 'irm_sain_22.jpg', 'images_irm/sain/irm_sain_22.jpg'),
+(23, 4782, 'irm_sain_23.jpg', 'images_irm/sain/irm_sain_23.jpg'),
+(24, 4783, 'irm_sain_24.jpg', 'images_irm/sain/irm_sain_24.jpg'),
+(25, 4784, 'irm_sain_25.jpg', 'images_irm/sain/irm_sain_25.jpg'),
+(26, 4758, 'irm_malade_01.jpg', 'images_irm/malade/irm_malade_01.jpg'),
+(27, 4764, 'irm_malade_02.jpg', 'images_irm/malade/irm_malade_02.jpg'),
+(28, 4766, 'irm_malade_03.jpg', 'images_irm/malade/irm_malade_03.jpg'),
+(29, 4767, 'irm_malade_04.jpg', 'images_irm/malade/irm_malade_04.jpg'),
+(30, 4768, 'irm_malade_05.jpg', 'images_irm/malade/irm_malade_05.jpg'),
+(31, 4770, 'irm_malade_06.jpg', 'images_irm/malade/irm_malade_06.jpg'),
+(32, 4771, 'irm_malade_07.jpg', 'images_irm/malade/irm_malade_07.jpg'),
+(33, 4774, 'irm_malade_08.jpg', 'images_irm/malade/irm_malade_08.jpg'),
+(34, 4775, 'irm_malade_09.jpg', 'images_irm/malade/irm_malade_09.jpg'),
+(35, 4785, 'irm_malade_10.jpg', 'images_irm/malade/irm_malade_10.jpg'),
+(36, 4787, 'irm_malade_11.jpg', 'images_irm/malade/irm_malade_11.jpg'),
+(37, 4789, 'irm_malade_12.jpg', 'images_irm/malade/irm_malade_12.jpg'),
+(38, 4790, 'irm_malade_13.jpg', 'images_irm/malade/irm_malade_13.jpg'),
+(39, 4794, 'irm_malade_14.jpg', 'images_irm/malade/irm_malade_14.jpg'),
+(40, 4796, 'irm_malade_15.jpg', 'images_irm/malade/irm_malade_15.jpg'),
+(41, 4797, 'irm_malade_16.jpg', 'images_irm/malade/irm_malade_16.jpg'),
+(42, 4799, 'irm_malade_17.jpg', 'images_irm/malade/irm_malade_17.jpg'),
+(43, 4800, 'irm_malade_18.jpg', 'images_irm/malade/irm_malade_18.jpg');
+
+Il y a 7 patients qui n'ont pas passé d'irm donc ils n'ont aucune ligne dans cette table.
+
+Importation des données dans les tables principales:
+1) Table patient :
+- fichier csv import_patient.csv
+- pour importer : séparateur de colonne : ; et nom des colonnes : id_patient,age,id_genre,id_ethnie,id_niveau_educ,id_diagnostic_ref
+suppression de la première ligne de notre csv contenant le nom des colonnes car MySQL va considérer cette ligne comme des données (et va donc essayer de l'insérer comme une ligne patient, ce qui causera une erreur ou une ligne fausse).
+L'import CSV de phpMyAdmin ne fait pas de mapping de noms automatique — il insère colonne par ordre de position, ou exige que les noms correspondent exactement.
+
+2) Table mode_vie :
+- fichier import_modevie.csv
+- nom des colonnes : id_patient,imc,fumeur,alcool,activite_physique,qualite_diet,qualite_sommeil
+AutoIncrement permet de générer automatiquement id_mode_vie (AUTO_INCREMENT) pour chaque ligne
+
+3) Table historique_medical
+id_patient,antecedents,maladie_cardio,diabete,depression,trauma_cranien,hypertension
+
+3) Table mesure_clinique
+id_patient,pression_sys,pression_dia,chol_total,chol_hdl,chol_ldl,chol_tri
+
+4) Table eval_cognitive
+id_patient,mmse,score_fonct,memoire,probleme_comp,adl
+
+5) Table symptomes
+id_patient,confusion,desorientation,chang_perso,difficulte_taches,oubli
+
